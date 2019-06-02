@@ -2,7 +2,8 @@ set.seed(500)
 library(MASS)
 library(neuralnet)
 
-setwd("E:\\TDA")
+#setwd("E:\\TDA")
+setwd("/Users/hk/Desktop/School/MRHS/11th Grade/R/NN-ML/Wildfire-NN-ML")
 data <- read.csv("merra2_active_calfire_jja.csv")[,c("t2mmax", "dc", "speed", "fcount_aqua")]
 #[,c("t2mmax", "qv2m", "speed", "dc", "fcount_aqua")]
 

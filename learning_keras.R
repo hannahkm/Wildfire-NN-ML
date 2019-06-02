@@ -1,12 +1,14 @@
-install.packages("keras")
-library("keras")
-install_keras() #downloads Keras library and TensorFlow backend?
-Sys.setenv(RETICULATE_PYTHON="C:\\Users\\kimh2\\anaconda3\\python.exe")
-install_keras(conda = "C:\\Users\\kimh2\\anaconda3\\Scripts\\conda.exe")
-#(need anaconda in order to download and run code)
-#anaconda is acting up and so is miniconda ("Can\'t connect to HTTPS URL because the SSL module is not available.")
-#find out what's wrong :(
+devtools::install_github("rstudio/tensorflow")
+library(tensorflow)
+install_tensorflow(method = "conda", version="nightly")
+library(keras)
+use_condaenv('r-tensorflow')
 
+boston_housing <- dataset_boston_housing()
+View(boston_housing)
+#(need anaconda in order to download and run code)
+
+View(mnist)
 #using the classic MNIST handwriting dataset
 mnist <- dataset_mnist()
 x_train <- mnist$train$x
@@ -54,12 +56,13 @@ history <- model %>% fit(
   validation_split = 0.2
 )
 
+#loss and accuracy graphs
 plot(history)
 
 #see performace on test data
 model %>% evaluate(x_test, y_test,verbose = 0)
-#$loss
-#$acc
+#percent loss
+#percent accuracy 
 
 #predictions on new data?
 model %>% predict_classes(x_test)
