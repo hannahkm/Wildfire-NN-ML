@@ -47,40 +47,42 @@ fit = model %>%
 plot(fit)
 
 
-#========================================================================================
+#==================================================================================
 
-x_train <- data[1:255, 1:17]
+x_train <- data[1:255, c(2, 6:14, 17)]
 y_train <- data[1:255, 20]
-x_test <- data[256:368, 1:17]
+x_test <- data[256:368, c(2, 6:14, 17)]
 y_test <- data[256:368, 20]
-
-
 
 
 #one-hot encode vectors into binary class matrices??
 #i guess it basically makes it possible to use ML on the input, and then later revert
 #the data type to the original??
+#x_train <- to_categorical(x_train)
+#x_test <- to_categorical(x_test)
 y_train <- to_categorical(y_train)
 y_test <- to_categorical(y_test)
+
+y_train <- argmax(y_train) #install.packages("ramify")
 
 use_implementation("tensorflow")
 
 model <- keras_model_sequential() 
 
 model %>% 
-  layer_flatten() %>% 
-  layer_dense(units = 256, activation = "relu", input_shape = c(784)) %>% 
+  layer_dense(units = 256, activation = "relu", input_shape = c(ncol(x_train))) %>% 
   layer_dropout(rate = 0.4) %>% 
   layer_dense(units = 128, activation = "relu") %>%
   layer_dropout(rate = 0.3) %>%
-  layer_dense(units = 10, activation = "softmax")
+  layer_flatten() %>% 
+  layer_dense(units = max(y_train)+1, activation = "softmax")
 
 
 summary(model)
 
 #compile the model with loss function, optimizer, and metrics...
 model %>% compile(
-  loss = "categorical_crossentropy",
+  loss = "sparse_categorical_crossentropy",
   optimizer = optimizer_rmsprop(),
   metrics = c("accuracy")
 )
@@ -88,20 +90,23 @@ model %>% compile(
 #train with 30 epochs and batches of 128
 history <- model %>% fit(
   as.matrix(x_train), as.matrix(y_train), 
-  epochs = 30, batch_size = 128, 
+  epochs = 500, batch_size = 128, 
   validation_split = 0.2
 )
+#val_loss: value of cost function for cross-validation data
+#loss: value of cost function for training data.
+
 
 #loss and accuracy graphs
 plot(history)
 
 #see performace on test data
-model %>% evaluate(x_test, y_test,verbose = 0)
+#model %>% evaluate(as.matrix(x_test), as.matrix(y_test),verbose = 0)
 #percent loss
 #percent accuracy 
 
 #predictions on new data?
-model %>% predict_classes(x_test)
+#model %>% predict_classes(x_test)
 
 
 
