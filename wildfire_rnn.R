@@ -12,7 +12,8 @@
 # data <- read.csv(fname)
 
 setwd("/Users/hk/Desktop/School/MRHS/11th Grade/R/NN-ML/Wildfire-NN-ML")
-data <- read.csv("merra2_calfire_jja_mine.csv")
+data <- read.csv("merra2_calfire_jja_mine.csv") #made up a new csv to make things easier
+                                                #could be bad though
 
 data <- data.matrix(data)
 train_data <- data[1:250,]
@@ -45,7 +46,8 @@ generator <- function(data, lookback, delay, min_index, max_index,
                      length.out = dim(samples)[[2]])
       samples[j,,] <- data[indices,]
       targets[[j]] <- data[rows[[j]] + delay,2]
-    }           
+    }       
+
     list(samples, targets)
   }
 }
@@ -95,7 +97,7 @@ test_steps <- (nrow(data) - 600 - lookback) / batch_size
 
 #ONE======
 model <- keras_model_sequential() %>% 
-  layer_gru(units = 32, input_shape = list(1,23)) %>% 
+  layer_gru(units = 32, input_shape = list(1, ncol(data))) %>% 
   layer_dense(units = 1)
 
 model %>% compile(
@@ -117,7 +119,7 @@ plot(history)
 #TWO======
 model <- keras_model_sequential() %>% 
   layer_gru(units = 32, dropout = 0.2, recurrent_dropout = 0.2,
-            input_shape = list(1,23)) %>% 
+            input_shape = list(1, ncol(data))) %>% 
   layer_dense(units = 1)
 
 model %>% compile(
