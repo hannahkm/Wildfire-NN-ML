@@ -95,7 +95,7 @@ test_steps <- (nrow(data) - 600 - lookback) / batch_size
 
 #ONE======
 model <- keras_model_sequential() %>% 
-  layer_gru(units = 32, input_shape = list(NULL, c(ncol(x_train)))) %>% 
+  layer_gru(units = 32, input_shape = list(1,23)) %>% 
   layer_dense(units = 1)
 
 model %>% compile(
@@ -117,7 +117,7 @@ plot(history)
 #TWO======
 model <- keras_model_sequential() %>% 
   layer_gru(units = 32, dropout = 0.2, recurrent_dropout = 0.2,
-            input_shape = list(NULL, c(ncol(x_train)))) %>% 
+            input_shape = list(1,23)) %>% 
   layer_dense(units = 1)
 
 model %>% compile(
@@ -132,5 +132,5 @@ history <- model %>% fit_generator(
   validation_data = val_gen,
   validation_steps = val_steps
 )
-
+plot(history)
 
