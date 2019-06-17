@@ -1,11 +1,10 @@
+#source: https://keras.rstudio.com/
+
 devtools::install_github("rstudio/tensorflow")
 library(tensorflow)
 install_tensorflow(method = "conda", version="nightly")
 library(keras)
 use_condaenv('r-tensorflow')
-
-boston_housing <- dataset_boston_housing()
-View(boston_housing)
 #(need anaconda in order to download and run code)
 
 View(mnist)

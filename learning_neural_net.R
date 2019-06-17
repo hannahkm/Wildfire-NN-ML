@@ -1,3 +1,5 @@
+#source: https://tensorflow.rstudio.com/keras/articles/tutorial_basic_regression.html
+
 set.seed(500)
 library(MASS)
 library(neuralnet)

@@ -48,13 +48,29 @@ plot(fit)
 
 
 #==================================================================================
+#reference: https://keras.rstudio.com/
 
 x_train <- data[1:255, c(2, 6:14, 17)]
 y_train <- data[1:255, 20]
 x_test <- data[256:368, c(2, 6:14, 17)]
 y_test <- data[256:368, 20]
 
+#run the for loops in order to make fcount_aqua binary
+for (i in 1:length(y_train)){
+  if (y_train[[i]]>=50){
+    y_train[[i]] <- 1
+  } else {
+    y_train[[i]] <- 0
+  }
+}
 
+for (i in 1:length(y_test)){
+  if (y_test[[i]]>=50){
+    y_test[[i]] <- 1
+  } else {
+    y_test[[i]] <- 0
+  }
+}
 #one-hot encode vectors into binary class matrices??
 #i guess it basically makes it possible to use ML on the input, and then later revert
 #the data type to the original??
