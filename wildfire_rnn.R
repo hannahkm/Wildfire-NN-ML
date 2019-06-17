@@ -11,10 +11,21 @@
 # fname <- file.path(data_dir, "jena_climate_2009_2016.csv")
 # data <- read.csv(fname)
 
-setwd("/Users/hk/Desktop/School/MRHS/11th Grade/R/NN-ML/Wildfire-NN-ML")
+#reference: https://blogs.rstudio.com/tensorflow/posts/2017-12-20-time-series-forecasting-with-recurrent-neural-networks/
+
+#setwd("/Users/hk/Desktop/School/MRHS/11th Grade/R/NN-ML/Wildfire-NN-ML")
+setwd("C:\\Users\\kimh2\\Desktop\\Wildfire-NN-ML-master")
 data <- read.csv("merra2_calfire_jja_mine.csv") #made up a new csv to make things easier
                                                 #could be bad though
 
+#note: running for loop makes loss for "ONE" worse but better for "TWO"
+for (i in 1:nrow(data)){ #differentiate between "lots" of fires and less fires
+  if (data[i,20]>=50){
+    data[i,20] <- 1
+  } else {
+    data[i,20] <- 0
+  }
+}
 data <- data.matrix(data)
 train_data <- data[1:250,]
 mean <- apply(train_data, 2, mean)
@@ -97,7 +108,29 @@ test_steps <- (nrow(data) - 600 - lookback) / batch_size
 
 #ONE======
 model <- keras_model_sequential() %>% 
-  layer_gru(units = 32, input_shape = list(1, ncol(data))) %>% 
+  layer_gru(units = 32, input_shape = list(NULL, dim(data)[[-1]])) %>% sf
+  layer_dense(units = 1)
+
+model %>% compile(
+  optimizer = optimizer_rmsprop(),
+  loss = "mae"
+)
+
+history <- model %>% fit_generator(
+  train_gen,
+  steps_per_epoch = 500,
+  epochs = 10,
+  validation_data = val_gen,
+  validation_steps = val_steps
+)
+
+plot(history)
+#END ONE====
+
+#TWO======
+model <- keras_model_sequential() %>% 
+  layer_gru(units = 32, dropout = 0.2, recurrent_dropout = 0.2,
+            input_shape = list(NULL, dim(data)[[-1]])) %>% 
   layer_dense(units = 1)
 
 model %>% compile(
@@ -109,28 +142,6 @@ history <- model %>% fit_generator(
   train_gen,
   steps_per_epoch = 500,
   epochs = 20,
-  validation_data = val_gen,
-  validation_steps = val_steps
-)
-
-plot(history)
-#END ONE====
-
-#TWO======
-model <- keras_model_sequential() %>% 
-  layer_gru(units = 32, dropout = 0.2, recurrent_dropout = 0.2,
-            input_shape = list(1, ncol(data))) %>% 
-  layer_dense(units = 1)
-
-model %>% compile(
-  optimizer = optimizer_rmsprop(),
-  loss = "mae"
-)
-
-history <- model %>% fit_generator(
-  train_gen,
-  steps_per_epoch = 500,
-  epochs = 40,
   validation_data = val_gen,
   validation_steps = val_steps
 )
