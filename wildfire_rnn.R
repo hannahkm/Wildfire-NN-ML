@@ -11,19 +11,19 @@
 # fname <- file.path(data_dir, "jena_climate_2009_2016.csv")
 # data <- read.csv(fname)
 
-#reference: https://blogs.rstudio.com/tensorflow/posts/2017-12-20-time-series-forecasting-with-recurrent-neural-networks/
+#ref: https://tinyurl.com/y4h4bo9k
 
-#setwd("/Users/hk/Desktop/School/MRHS/11th Grade/R/NN-ML/Wildfire-NN-ML")
-setwd("C:\\Users\\kimh2\\Desktop\\Wildfire-NN-ML-master")
-data <- read.csv("merra2_calfire_jja_mine.csv") #made up a new csv to make things easier
+setwd("/Users/hk/Desktop/School/MRHS/11th Grade/R/NN-ML/Wildfire-NN-ML")
+#setwd("C:\\Users\\kimh2\\Desktop\\Wildfire-NN-ML-master")
+data <- read.csv("merra2_calfire_jja_mine.csv")[,c(2:4,6:8,10:17,20)] #made up a new csv 
                                                 #could be bad though
 
 #note: running for loop makes loss for "ONE" worse but better for "TWO"
 for (i in 1:nrow(data)){ #differentiate between "lots" of fires and less fires
-  if (data[i,20]>=50){
-    data[i,20] <- 1
+  if (data[i,15]>=50){
+    data[i,15] <- 1
   } else {
-    data[i,20] <- 0
+    data[i,15] <- 0
   }
 }
 data <- data.matrix(data)
@@ -108,7 +108,7 @@ test_steps <- (nrow(data) - 600 - lookback) / batch_size
 
 #ONE======
 model <- keras_model_sequential() %>% 
-  layer_gru(units = 32, input_shape = list(NULL, dim(data)[[-1]])) %>% sf
+  layer_gru(units = 32, input_shape = list(NULL, dim(data)[[-1]])) %>%
   layer_dense(units = 1)
 
 model %>% compile(
@@ -127,7 +127,7 @@ history <- model %>% fit_generator(
 plot(history)
 #END ONE====
 
-#TWO======
+#TWO - add recurrent dropout======
 model <- keras_model_sequential() %>% 
   layer_gru(units = 32, dropout = 0.2, recurrent_dropout = 0.2,
             input_shape = list(NULL, dim(data)[[-1]])) %>% 
@@ -146,4 +146,108 @@ history <- model %>% fit_generator(
   validation_steps = val_steps
 )
 plot(history)
+#END TWO====
+
+#THREE - stacking layers =====
+model <- keras_model_sequential() %>% 
+  layer_gru(units = 32, 
+            dropout = 0.1, 
+            recurrent_dropout = 0.5,
+            return_sequences = TRUE,
+            input_shape = list(NULL, dim(data)[[-1]])) %>% 
+  layer_gru(units = 64, activation = "relu",
+            dropout = 0.1,
+            recurrent_dropout = 0.5) %>% 
+  layer_dense(units = 1)
+
+model %>% compile(
+  optimizer = optimizer_rmsprop(),
+  loss = "mae"
+)
+
+history <- model %>% fit_generator(
+  train_gen,
+  steps_per_epoch = 500,
+  epochs = 20,
+  validation_data = val_gen,
+  validation_steps = val_steps
+)
+
+plot(history)
+#END THREE====
+
+#FOUR - bidirectional RNN ====
+max_features <- nrow(data)
+maxlen <- 50
+x_train <- data[1:490,1:14]
+y_train <- data[1:490,15]
+x_test <- data[491:nrow(data),1:14]
+y_test <- data[491:nrow(data),15]
+x_train <- pad_sequences(x_train, maxlen = maxlen)
+x_test <- pad_sequences(x_test, maxlen = maxlen)
+
+
+model <- keras_model_sequential() %>% 
+  layer_embedding(input_dim = max_features, output_dim = 128) %>% 
+  bidirectional(
+    layer_lstm(units = 32)
+  ) %>% 
+  layer_dense(units = 1, activation = "sigmoid")
+
+model %>% compile(
+  optimizer = "rmsprop",
+  loss = "binary_crossentropy",
+  metrics = c("acc")
+)
+
+history <- model %>% fit(
+  x_train, y_train,
+  epochs = 10,
+  batch_size = 128,
+  validation_split = 0.2
+)
+#END FOUR====
+
+#ONE - this time use lstm instead of gru======
+model <- keras_model_sequential() %>% 
+  layer_lstm(units = 32, input_shape = list(NULL, dim(data)[[-1]])) %>%
+  layer_dense(units = 1)
+
+model %>% compile(
+  optimizer = optimizer_rmsprop(),
+  loss = "mae"
+)
+
+history <- model %>% fit_generator(
+  train_gen,
+  steps_per_epoch = 500,
+  epochs = 20,
+  validation_data = val_gen,
+  validation_steps = val_steps
+)
+
+plot(history)
+#END ONE====
+
+#TWO - recurrent dropout======
+model <- keras_model_sequential() %>% 
+  layer_lstm(units = 32, dropout = 0.2, recurrent_dropout = 0.2,
+            input_shape = list(NULL, dim(data)[[-1]])) %>% 
+  layer_dense(units = 1)
+
+model %>% compile(
+  optimizer = optimizer_rmsprop(),
+  loss = "mae"
+)
+
+history <- model %>% fit_generator(
+  train_gen,
+  steps_per_epoch = 500,
+  epochs = 20,
+  validation_data = val_gen,
+  validation_steps = val_steps
+)
+plot(history)
+#END TWO====
+
 
