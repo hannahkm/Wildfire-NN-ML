@@ -15,8 +15,7 @@
 
 setwd("/Users/hk/Desktop/School/MRHS/11th Grade/R/NN-ML/Wildfire-NN-ML")
 #setwd("C:\\Users\\kimh2\\Desktop\\Wildfire-NN-ML-master")
-data <- read.csv("merra2_calfire_jja_mine.csv")[,c(2:4,6:8,10:17,20)] #made up a new csv 
-                                                #could be bad though
+data <- read.csv("merra2_calfire_jja_mine.csv")[,c(2:4,6:8,10:17,20)]
 
 #note: running for loop makes loss for "ONE" worse but better for "TWO"
 for (i in 1:nrow(data)){ #differentiate between "lots" of fires and less fires
@@ -249,5 +248,7 @@ history <- model %>% fit_generator(
 )
 plot(history)
 #END TWO====
+
+
 
 
