@@ -3,7 +3,7 @@
 library("elmNNRcpp")
 
 setwd("/Users/hk/Desktop/School/MRHS/11th Grade/R/NN-ML/Wildfire-NN-ML")
-data <- read.csv("merra2_active_calfire_jja.csv")[,c(2:4,6:8,10:17,20)]
+data <- read.csv("merra2_active_calfire_jja.csv")[,c(15,16,20)]
 
 lastVar <- ncol(data)-1
 predictVar <- ncol(data)
@@ -57,8 +57,13 @@ cat('the rmse error for linear-model is :', rmse(y_test, predict_lm), '\n')
 #elm: 0.4867378 
 #lm: 0.4777222 
 
+#prediction of 0/1 using specific variables ([,c(3,5,8,9,10,11,14,20)])
+#elm: 0.446603
+#lm: 0.48653
 
-
+#prediction of 0/1 using specific variables (hot-dry-windy???) ([,c(3,10,11,20)])
+#elm: 0.4712681
+#lm: 0.4945382
 
 
 

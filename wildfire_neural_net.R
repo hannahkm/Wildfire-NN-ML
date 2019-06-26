@@ -4,8 +4,20 @@ library(neuralnet)
 
 #setwd("E:\\TDA")
 setwd("/Users/hk/Desktop/School/MRHS/11th Grade/R/NN-ML/Wildfire-NN-ML")
-data <- read.csv("merra2_active_calfire_jja.csv")[,c("t2mmax", "dc", "speed", "fcount_aqua")]
+data <- read.csv("merra2_active_calfire_jja.csv")[,c(2:4,6:8,10:17,20)]
 #[,c("t2mmax", "qv2m", "speed", "dc", "fcount_aqua")]
+
+lastVar <- ncol(data)-1
+predictVar <- ncol(data)
+
+for (i in 1:nrow(data)){ #differentiate between "lots" of fires and less fires
+  if (data[i,predictVar]>=50){
+    data[i,predictVar] <- 1
+  } else {
+    data[i,predictVar] <- 0
+  }
+}
+
 
 apply(data,2,function(x) sum(is.na(x))) 
 
