@@ -1,15 +1,18 @@
-#install.packages("e1071")
+install.packages("e1071")
 library("e1071")
 
-data <- read.csv("merra2_active_calfire_jja.csv")[,c(2:4,6:8,10:17,20)]
+setwd("/Users/hk/Desktop/School/MRHS/11th\ Grade/R/NN-ML/Wildfire-NN-ML/ML_Data")
+data <- read.csv("ml_dly_cal_r1.sel.csv")[,1:41]
+data <- data[c(which(data$month==6),which(data$month==7),which(data$month==8)),]
+data <- data[order(data$year),]
 rows <- nrow(data)
 num_train <- round(rows*0.75)
 set.seed(314)
 
-predictVar = which(names(data)=="fcount_aqua")
+predictVar = which(names(data)=="fpc1")
 
 for (i in 1:nrow(data)){ #differentiate between "lots" of fires and less fires
-  if (data[i,predictVar]>=50){
+  if (data[i,predictVar]>=10){
     data[i,predictVar] <- 1
   } else {
     data[i,predictVar] <- 0
@@ -20,16 +23,18 @@ rand_index <- sample(rows, num_train)
 train <- data[rand_index,]
 test <- data[-rand_index,]
 
-svm1 <- svm(data$fcount_aqua, data=train, 
+svm1 <- svm(factor(fpc1) ~ ., data=train,
             method="C-classification", kernal="radial", 
             gamma=0.1, cost=10)
 
 summary(svm1)
 
-plot(svm1, train, data$isi ~ data$bui, slice = list(isi = 4, bui = 2))
+#plot(svm1, train, isi ~ bui)
 
+prediction <- predict(svm1, test)
+xtab <- table(test$fpc1, prediction)
 
-
+xtab
 
 #=====================================
 

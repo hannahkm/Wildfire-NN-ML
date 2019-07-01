@@ -1,0 +1,50 @@
+04   hlml  0  99  surface_layer_height (m)
+05   pblh  0  99  planetary_boundary_layer_height (m)
+09   speed  0  99  surface_wind_speed (m s-1)
+12   evland  0  99  Evaporation_land (kg m-2 s-1)    mm/day in a selected
+13   gwetprof  0  99  ave_prof_soil_moisture (1)
+14   gwetroot  0  99  root_zone_soil_wetness (1)
+15   gwettop  0  99  surface_soil_wetness (1)
+16   lhland  0  99  Latent_heat_flux_land (W m-2)
+17   lwland  0  99  Net_longwave_land (W m-2)
+20   shland  0  99  Sensible_heat_flux_land (W m-2)
+24   swland  0  99  Net_shortwave_land (W m-2)
+25   tsat  0  99  surface_temperature_of_saturated_zone (K)
+26   tsoil1  0  99  soil_temperatures_layer_1 (K)
+27   tsoil2  0  99  soil_temperatures_layer_2 (K)
+28   tsoil3  0  99  soil_temperatures_layer_3 (K)
+29   tsoil4  0  99  soil_temperatures_layer_4 (K)
+34   tautot  0  99  in_cloud_optical_thickness_of_all_clouds (1)
+35   h850  0  99  height_at_850_hPa (m)
+37   h500  0  99  height_at_500_hPa (m)
+38   omega500  0  99  omega_at_500_hPa (Pa s-1)
+40   q850  0  99  specific_humidity_at_850_hPa (kg kg-1)  g/Kg in a selected
+42   qv2m  0  99  2-meter_specific_humidity (kg kg-1)  g/Kg in a selected
+43   slp  0  99  sea_level_pressure (Pa)               h/Pa in a selected
+46   t850  0  99  air_temperature_at_850_hPa (K)
+45   t2m  0  99  2-meter_air_temperature (K)
+62   tmax  0  99  t2mmax   2-meter_air_temperature (K)
+63   tmin  0  99  t2mmin   2-meter_air_temperature (K)
+47   t2mdew  0  99  dew_point_temperature_at_2_m (K)
+49   tqv  0  99  total_precipitable_water_vapor (kg m-2)
+55   zlcl  0  99  lifting_condensation_level (m)
+07   pr  0  99  total_precipitation (kg m-2 s-1)   mm/day in a selected
+56   pr7  0  99  mm 7-day prectotcorr total_precipitation (mm/day)
+57   pr15 0  99  mm 15-day
+58   pr30 0  99  mm 30-day
+59   pr60 0  99  mm 60-day
+60   pr90 0  99  mm 90-day
+61   pr180  0  99  mm 180-day
+64   fpc1  0  99  mod + myd in a selected
+65   frp1  0  99  mod + myd in a selected
+66   fpc2  0  99  mod + myd in a selected in log10
+67   frp2  0  99  mod + myd in a selected in log10
+68   tr  0  99  mm   TRMM
+69   tr7  0  99  mm 7-day
+70   tr15 0  99  mm 15-day
+71   tr30 0  99  mm 30-day
+72   tr60 0  99  mm 60-day
+73   tr90 0  99  mm 90-day
+74   tr180 0  99  mm 180-day
+endvars
+
