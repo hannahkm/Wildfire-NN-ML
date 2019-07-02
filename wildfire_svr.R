@@ -3,17 +3,19 @@ library("e1071")
 library("caret")
 
 setwd("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data")
-data <- read.csv("ml_dly_cal_r3.sel.csv")[,1:41]
+data <- read.csv("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r3.sel.csv")[,1:41]
 data <- data[c(which(data$month==6),which(data$month==7),which(data$month==8)),]
 data <- data[order(data$year),]
-rows <- nrow(data)
 k <- 4
-row_per_fold <- nrow(data)/k
 
 num_train <- round(rows*(k-1)/k)
 set.seed(314)
 
 predictVar = which(names(data)=="fpc1")
+
+data <- rbind(data[sample(which(data$fpc1==0),length(which(data$fpc1==0))/2),],data[which(data$fpc1!=0),])
+rows <- nrow(data)
+row_per_fold <- nrow(data)/k
 
 s <- split(data,(sample(nrow(data), k, replace=F)))
 

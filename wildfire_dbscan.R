@@ -1,3 +1,4 @@
+
 # install.packages("fpc")
 # install.packages("dbscan")
 # install.packages("factoextra")
@@ -5,14 +6,13 @@
 #so this one isn't going so well lol
 #https://stats.stackexchange.com/questions/270631/why-are-most-of-my-points-classified-as-noise-using-dbscan
 
-data <- read.csv("ml_dly_cal_r1.sel.csv")[,1:41]
-df <- data[, 4:40]
+data <- read.csv("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r1.sel.csv")[,c(1:3,6,8)]
+df <- data[, 4:ncol(data)]
 
 # Compute DBSCAN using fpc package
 # library("fpc")
 set.seed(123)
-db <- fpc::dbscan(df, eps = 5, MinPts = 3, method="hybrid")
-db2 <- dbscan::dbscan(df, 0.9, 3, "raw")
+db <- fpc::dbscan(df, eps = 0.15, MinPts = 2)
 
 # all(db$cluster == db2)
 

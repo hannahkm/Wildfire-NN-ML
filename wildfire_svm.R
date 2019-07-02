@@ -4,12 +4,10 @@ install.packages("e1071")
 library("e1071")
 
 setwd("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/Old_Data")
-data <- read.csv("ml_dly_cal_r3.sel.csv")[,1:41]
+data <- read.csv("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r3.sel.csv")[,1:41]
 data <- data[c(which(data$month==6),which(data$month==7),which(data$month==8)),]
 data <- data[order(data$year),]
-rows <- nrow(data)
 k <- 4
-row_per_fold <- nrow(data)/k
 
 num_train <- round(rows*(k-1)/k)
 set.seed(314)
@@ -17,12 +15,16 @@ set.seed(314)
 predictVar = which(names(data)=="fpc1")
 
 for (i in 1:nrow(data)){ #differentiate between "lots" of fires and less fires
-  if (data[i,predictVar]>=10){
+  if (data[i,predictVar]>=25){
     data[i,predictVar] <- 1
   } else {
     data[i,predictVar] <- 0
   }
 }
+
+data <- rbind(data[sample(which(data$fpc1==0),length(which(data$fpc1==0))/2),],data[which(data$fpc1==1),])
+rows <- nrow(data)
+row_per_fold <- nrow(data)/k
 
 s <- split(data,(sample(nrow(data), k, replace=F)))
 
@@ -42,7 +44,7 @@ for (i in 1:k){
   
   prediction <- predict(svm1, test)
   xtab <- table(test$fpc1, prediction)
-  print(as.matrix(xtab))
+  #print(as.matrix(xtab))
   df <- as.data.frame(as.matrix(xtab))
   wrong <- df[2,3]+df[3,3]
   total <- df[2,3]+df[3,3]+df[1,3]+df[4,3]
@@ -64,6 +66,37 @@ for (i in 1:k){
 
 # from least to greatest accuracy: r2, r1, r3
 
+#after reducing number of zeros
+
+#r1
+# percent error: 26.78571 
+# percent accuracy: 73.21429 
+# percent error: 26.78571 
+# percent accuracy: 73.21429 
+# percent error: 23.21429 
+# percent accuracy: 76.78571 
+# percent error: 35.71429 
+# percent accuracy: 64.28571 
+
+#r2
+# percent error: 23.07692 
+# percent accuracy: 76.92308 
+# percent error: 30.76923 
+# percent accuracy: 69.23077 
+# percent error: 13.46154 
+# percent accuracy: 86.53846 
+# percent error: 21.15385 
+# percent accuracy: 78.84615 
+
+#r3
+# percent error: 6.122449 
+# percent accuracy: 93.87755 
+# percent error: 14.28571 
+# percent accuracy: 85.71429 
+# percent error: 18.36735 
+# percent accuracy: 81.63265 
+# percent error: 14.28571 
+# percent accuracy: 85.71429 
 #=====================================
 
 #y response data frame --> factor
@@ -90,5 +123,3 @@ points(x, col = y+1, pch = 19)
 contour(px1, px2, matrix(func, 69, 99), level = 0, add = TRUE)
 #Bayes decision boundary
 contour(px1, px2, matrix(func, 69, 99), level = 0.5, add = TRUE, col = "blue", lwd = 2)
-
-
