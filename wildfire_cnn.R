@@ -5,7 +5,7 @@ install_tensorflow(method = "conda", version="nightly")
 library(keras)
 use_condaenv('r-tensorflow')
 
-data <- read.csv("ml_dly_cal_r2.sel.csv")[,c(1:3,6,8,10,14,25,28,32,34:41)]
+data <- read.csv("ml_dly_cal_r1.sel.csv")[,c(1:3,6,8,10,14,25,28,32,34:41)]
 data <- data[,-c(1,2,3)]
 
 predictVar = which(names(data)=="fpc1")
