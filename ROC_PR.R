@@ -53,7 +53,7 @@ plot(wpr2,legend=1) #1=bottom, 2=left, 3=top, 4=right
 #================ DMwR and ROCR
 
 pred <- prediction(predict_elm,y_test)
-perf <- performance(pred,"prec","rec")
+perf <- performance(pred,"prec","rec") 
 PRcurve(predict_elm,y_test)
 
 
