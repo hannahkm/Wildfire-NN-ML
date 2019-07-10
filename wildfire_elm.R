@@ -1,4 +1,5 @@
-#source: https://cran.r-project.org/web/packages/elmNNRcpp/vignettes/extreme_learning_machine.html
+#source: https://cran.r-project.org/web/packages/elmNNRcpp/vignettes/
+#extreme_learning_machine.html
 #install.packages("elmNNRcpp")
 library("elmNNRcpp")
 
@@ -10,7 +11,7 @@ lastVar <- ncol(data)-1
 predictVar <- ncol(data)
 
 for (i in 1:nrow(data)){ #differentiate between "lots" of fires and less fires
-  if (data[i,predictVar]>=15){
+  if (data[i,predictVar]>=2){
     data[i,predictVar] <- 1
   } else {
     data[i,predictVar] <- 0
@@ -23,8 +24,8 @@ for (i in 1:nrow(data)){ #differentiate between "lots" of fires and less fires
 x_train <- data[1:(nrow(data)*0.75), 1:lastVar]
 x_test <- data[(nrow(data)*0.75+1):nrow(data), 1:lastVar]
 
-y_train= matrix(data[1:(nrow(data)*0.75), predictVar], nrow = length(data[1:(nrow(data)*0.75), lastVar]),
-             ncol = 1)
+y_train= matrix(data[1:(nrow(data)*0.75), predictVar], nrow = 
+                  length(data[1:(nrow(data)*0.75), lastVar]),ncol = 1)
 
 fit_elm = elm_train(as.matrix(x_train), y_train, nhid = 1000, actfun = 'purelin',
                     init_weights = "uniform_negative", bias = TRUE, verbose = T)
@@ -39,16 +40,14 @@ for (i in 0:17){
   roc.plot(as.matrix(y_test),predict_elm)
   threshold <- 0.1+i*0.05
   predict_elm <- ifelse(predict_elm<threshold,0,1)
-  # xtab <- table(y_test, predict_elm)
-  # #print(as.matrix(xtab))
-  # df <- as.data.frame(as.matrix(xtab))
+  # cat(roc.area(as.matrix(y_test),predict_elm)$A, "\n")
+  xtab <- table(as.matrix(y_test), predict_elm)
+  #print(as.matrix(xtab))
+  df <- as.data.frame(as.matrix(xtab))
   # plot_values <- rbind(plot_values,calc_pr(df))
   pred <- prediction(predict_elm,y_test)
   perf <- performance(pred,"prec","rec") 
   PRcurve(predict_elm,y_test)
-  colnames(predict_elm) <- c("predict")
-  colnames(y_test) <- c("class")
-  
 }
 
 plot_values <- plot_values[-1,]
@@ -158,9 +157,11 @@ rmse = function (y_true, y_pred) {
 #mean square errors ====================
 
 print_results <- function(y_test, predict_elm, predict_lm){
-  cat('the rmse error for extreme-learning-machine is :', rmse(y_test, predict_elm[, 1]), '\n')
+  cat('the rmse error for extreme-learning-machine is :', 
+      rmse(y_test, predict_elm[, 1]), '\n')
   cat('the rmse error for linear-model is :', rmse(y_test, predict_lm), '\n')
-  cat('range:', min(sqrt((y_test-predict_elm[,1])^2)), 'to', max(sqrt((y_test-predict_elm[,1])^2)))
+  cat('range:', min(sqrt((y_test-predict_elm[,1])^2)), 'to', 
+      max(sqrt((y_test-predict_elm[,1])^2)))
 }
 
 
