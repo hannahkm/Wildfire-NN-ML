@@ -50,5 +50,13 @@ plot(wpr2,scale.color=heat.colors(100))
 plot(wpr2,color=6,lty="dotted")
 plot(wpr2,legend=1) #1=bottom, 2=left, 3=top, 4=right
 
+#================ DMwR and ROCR
 
+pred <- prediction(predict_elm,y_test)
+perf <- performance(pred,"prec","rec")
+PRcurve(predict_elm,y_test)
+
+
+#================ verification
+roc.plot(y_test,as.data.frame(predict_elm))
 

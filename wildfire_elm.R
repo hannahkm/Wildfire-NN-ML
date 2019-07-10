@@ -3,7 +3,7 @@
 library("elmNNRcpp")
 
 setwd("/Users/hk/Desktop/School/MRHS/11th Grade/R/NN-ML/Wildfire-NN-ML")
-data <- read.csv("/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r1.sel.csv")[,c(1:41)]
+data <- read.csv("/Users/hk/Desktop/School/MRHS/11th\ Grade/R/NN-ML/Wildfire-NN-ML/ML_Data/ml_dly_cal_r2.sel.csv")[,c(1:41)]
 data <- data[,-c(1,2,3)]
 
 lastVar <- ncol(data)-1
@@ -17,8 +17,8 @@ for (i in 1:nrow(data)){ #differentiate between "lots" of fires and less fires
   }
 }
 
-data <- rbind(data[sample(which(data$fpc1==0),length(which(data$fpc1==1))),],
-              data[which(data$fpc1==1),])
+# data <- rbind(data[sample(which(data$fpc1==0),length(which(data$fpc1==1))),],
+#               data[which(data$fpc1==1),])
 
 x_train <- data[1:(nrow(data)*0.75), 1:lastVar]
 x_test <- data[(nrow(data)*0.75+1):nrow(data), 1:lastVar]
@@ -29,7 +29,7 @@ y_train= matrix(data[1:(nrow(data)*0.75), predictVar], nrow = length(data[1:(nro
 fit_elm = elm_train(as.matrix(x_train), y_train, nhid = 1000, actfun = 'purelin',
                     init_weights = "uniform_negative", bias = TRUE, verbose = T)
 
-y_test = data[(nrow(data)*0.75+1):nrow(data), predictVar]
+y_test = as.data.frame(data[(nrow(data)*0.75+1):nrow(data), predictVar])
 
 plot_values <- data.frame(matrix(ncol=2))
 colnames(plot_values) <- c("V1", "V2")
