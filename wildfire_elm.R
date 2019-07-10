@@ -3,7 +3,7 @@
 library("elmNNRcpp")
 
 setwd("/Users/hk/Desktop/School/MRHS/11th Grade/R/NN-ML/Wildfire-NN-ML")
-data <- read.csv("/Users/hk/Desktop/School/MRHS/11th\ Grade/R/NN-ML/Wildfire-NN-ML/ML_Data/ml_dly_cal_r2.sel.csv")[,c(1:41)]
+data <- read.csv("/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r2.sel.csv")[,c(1:41)]
 data <- data[,-c(1,2,3)]
 
 lastVar <- ncol(data)-1
@@ -36,12 +36,19 @@ colnames(plot_values) <- c("V1", "V2")
 #PR
 for (i in 0:17){
   predict_elm = elm_predict(fit_elm, as.matrix(x_test))
+  roc.plot(as.matrix(y_test),predict_elm)
   threshold <- 0.1+i*0.05
   predict_elm <- ifelse(predict_elm<threshold,0,1)
-  xtab <- table(y_test, predict_elm)
-  #print(as.matrix(xtab))
-  df <- as.data.frame(as.matrix(xtab))
-  plot_values <- rbind(plot_values,calc_pr(df))
+  # xtab <- table(y_test, predict_elm)
+  # #print(as.matrix(xtab))
+  # df <- as.data.frame(as.matrix(xtab))
+  # plot_values <- rbind(plot_values,calc_pr(df))
+  pred <- prediction(predict_elm,y_test)
+  perf <- performance(pred,"prec","rec") 
+  PRcurve(predict_elm,y_test)
+  colnames(predict_elm) <- c("predict")
+  colnames(y_test) <- c("class")
+  
 }
 
 plot_values <- plot_values[-1,]
