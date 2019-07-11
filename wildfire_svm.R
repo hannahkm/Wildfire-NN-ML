@@ -4,7 +4,7 @@ install.packages("e1071")
 library("e1071")
 
 setwd("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/Old_Data")
-data <- read.csv("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r2.sel.csv")[,c(1:3,6,8,10,14,25,28,32,34:41)]
+data <- read.csv("/home/hannah/Wildfire-NN-ML/ML_Data/ml_dly_cal_r2.sel.csv")[,c(1:3,6,8,10,14,25,28,32,34:41)]
 # data <- data[c(which(data$month==6),which(data$month==7),which(data$month==8)),]
 data <- data[order(data$year),]
 data <- data[,-c(1,2,3)]
@@ -45,13 +45,17 @@ for (i in 1:k){
   #plot(svm1, train, isi ~ bui)
   
   prediction <- predict(svm1, test)
-  xtab <- table(test$fpc1, prediction)
-  #print(as.matrix(xtab))
-  df <- as.data.frame(as.matrix(xtab))
-  wrong <- df[2,3]+df[3,3]
-  total <- nrow(test)
-  cat("percent error:", (wrong/total)*100, "\n")
-  cat("percent accuracy:", 100-(wrong/total)*100, "\n")
+  # xtab <- table(test$fpc1, prediction)
+  # #print(as.matrix(xtab))
+  # df <- as.data.frame(as.matrix(xtab))
+  # wrong <- df[2,3]+df[3,3]
+  # total <- nrow(test)
+  # cat("percent error:", (wrong/total)*100, "\n")
+  # cat("percent accuracy:", 100-(wrong/total)*100, "\n")
+  pred <- prediction(as.matrix(prediction),test[,ncol(test)])
+  perf <- performance(pred,"prec","rec") 
+  PRcurve(predict_elm,y_test)
+  roc.plot(as.matrix(test[,ncol(test)]),prediction)
 }
 
 #=====================================
