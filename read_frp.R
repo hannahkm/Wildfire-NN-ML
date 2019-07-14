@@ -11,8 +11,8 @@ data <- data.frame(matrix(ncol = 5))
 colnames(data) <- c("Date", "Time", "FP_latitude", "FP_longitude", "FP_power")
 
 for (j in 1:nrow(files)){
-  sub_files <- list.files(path=toString(files[j,]))
-  for (k in 1:length(subfiles)){
+  sub_files <- list.files(path=toString(files[j,]), full.names=T)
+  for (k in 1:length(sub_files)){
     tbl <- read.table(toString(sub_files[k]),skip=6, header = FALSE,
                       stringsAsFactors = FALSE,sep=",") 
     colnames(tbl) <- as.matrix(tbl[1,])
