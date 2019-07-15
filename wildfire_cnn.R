@@ -5,14 +5,18 @@ install_tensorflow(method = "conda", version="nightly")
 library(keras)
 use_condaenv('r-tensorflow')
 
-data <- read.csv("/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r1.sel.csv")[,c(1:3,6,8,10,14,25,28,32,34:41)]
+data <- read.csv("/home/hannah/Wildfire-NN-ML/ML_Data/ml_dly_cal_r1.sel.csv")[,c(1:3,6,8,10,14,25,28,32,34:41)]
 data <- data[,-c(1,2,3)]
+
+for (i in 1:(ncol(data)-1)){
+  data[,i] <- normalize(data[,i])
+}
 
 predictVar = which(names(data)=="fpc1")
 
 
 for (i in 1:nrow(data)){ #differentiate between "lots" of fires and less fires
-  if (data[i,predictVar]>=10){
+  if (data[i,predictVar]>=5){
     data[i,predictVar] <- 1
   } else {
     data[i,predictVar] <- 0
@@ -38,7 +42,7 @@ model %>%
     filter = ncol(train_x),
     kernel_size = 1,
     padding = "same",
-    input_shape = dim(train_x)[1:2]
+    input_shape = dim(train_x)[-1]
   ) %>%
   layer_activation("relu") %>%
   #another 2-D convolution layer
@@ -63,18 +67,18 @@ model %>%
   layer_activation("relu") %>%
   layer_dropout(0.5) %>%
   #output layer-10 classes-10 units
-  layer_dense(10) %>%
+  layer_dense(2) %>%
   #applying softmax nonlinear activation function to the output layer 
   #to calculate cross-entropy
   layer_activation("softmax")
 #for computing Probabilities of classes-"logit(log probabilities)
 
 
-opt<-optimizer_adam( lr= 0.0001 , decay = 1e-6 )
+opt<-optimizer_adam( lr= 0.00001 , decay = 1e-6 ) #lr = learning rate (too small makes it really chaotic)
 #lr-learning rate , decay - learning rate decay over each update
 
 model %>%
-  compile(loss="categorical_crossentropy",
+  compile(loss="sparse_categorical_crossentropy",
           optimizer=opt,metrics = "accuracy")
 #Summary of the Model and its Architecture
 summary(model)
@@ -83,24 +87,10 @@ summary(model)
   model %>% fit(train_x, as.matrix(train_y) ,batch_size=32,
                  epochs=80,validation_data = list(test_x, as.matrix(test_y)),
                  shuffle=TRUE)
-  #Generating images
   
-  gen_images <- image_data_generator(featurewise_center = TRUE,
-                                     featurewise_std_normalization = TRUE,
-                                     rotation_range = 20,
-                                     width_shift_range = 0.30,
-                                     height_shift_range = 0.30,
-                                     horizontal_flip = TRUE  )
-  #Fit image data generator internal statistics to some sample data
-  gen_images %>% fit_image_data_generator(train_x)
-  #Generates batches of augmented/normalized data from image data and 
-  #labels to visually see the generated images by the Model
-  model %>% fit_generator(
-    flow_images_from_data(train_x, train_y,gen_images,
-                          batch_size=32,save_to_dir="F:/PROJECTS/CNNcifarimages/"),
-    steps_per_epoch=as.integer(50000/32),epochs = 80,
-    validation_data = list(test_x, test_y) )
-
+  predictions <- predict_classes(model, test_x)
+  probs <- predict_proba(model, test_x)
+  
 
 resize_data <- function(df){
   new_arr <- array(dim=c(nrow(df),8,6))
