@@ -37,7 +37,7 @@ for (i in 1:k){
   test <- data[row.names(s[[i]])[-rand_index],]
   
   svm1 <- svm(factor(fpc1) ~ ., data=train,
-              method="C-classification", kernal="radial", 
+              method="C-classification", kernel="radial", 
               gamma=0.1, cost=10)
   
   summary(svm1)
