@@ -46,7 +46,6 @@ data <- data[-which(data$FP_power==0),]
 write.csv(data, file="all_data.csv", row.names=FALSE)
 
 #======================================= SUMMER ONLY
-
 # df_months <- sapply(data[,1],substring,6,7)
 # data <- cbind(df_months, data)
 
@@ -104,6 +103,7 @@ plot_density <- function(data_a, data_i){
   bin_names <- bin_names[-1,]
   bin_freq_days <- cbind(bin_names, bin_freq_days)
   
+  bin_freq_days[,1] <- as.numeric(as.character(bin_freq_days[,1]))
   plot(x=bin_freq_days[,1], y=bin_freq_days[,3], type="n",xlab="bins",ylab="freq/day")
   lines(x=bin_freq_days[,1], y=bin_freq_days[,3], type="l", col = "red")
   bin_freq_days[,1] <- as.numeric(as.character(bin_freq_days[,1]))
@@ -128,8 +128,8 @@ plot_density <- function(data_a, data_i){
   bin_names <- bin_names[-1,]
   bin_freq_days <- cbind(bin_names, bin_freq_days)
   
-  lines(x=bin_freq_days[,1], y=bin_freq_days[,3], type="l", col="blue")
   bin_freq_days[,1] <- as.numeric(as.character(bin_freq_days[,1]))
+  lines(x=bin_freq_days[,1], y=bin_freq_days[,3], type="l", col="blue")
   lines(predict(loess(bin_freq_days[,3]~bin_freq_days[,1])))
 }
 
