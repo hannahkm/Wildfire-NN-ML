@@ -1,4 +1,4 @@
-data <- read.csv("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/Old Data/merra2_active_calfire_jja.csv")[, c("t2mmax", 
+data <- read.csv("/Users/hk/Desktop/School/MRHS/11th\ Grade/R/NN-ML/Wildfire-NN-ML/ML_Data/Old Data/merra2_active_calfire_jja.csv")[, c("t2mmax", 
                                                                                                              "qv2m", "frp_aqua", "year", "month", "day")] #2,8
 
 data.dist <- dist(data[, c(1, 2)])
@@ -27,23 +27,31 @@ for (i in 1:data.mapper2$num_vertices) { #i is the cluster number
   for (j in 1:len) {
     if (!is.na(data[points.in.vertex[[j]], 3])) {
       count <- count + abs(data[points.in.vertex[[j]], 3])
-
-      df<- as.data.frame(rbind(df, data[points.in.vertex[[j]],]))
     }
   }
-  
-  # data_active <- df[which((df$years %in% c("2006", "2008", "2015", "2016"))
-  #                           & (df$months %in% c("6", "7", "8"))),]
-  # data_inactive <- df[which((df$years %in% c("2005", "2007", "2010", "2011"))
-  #                             & (df$months %in% c("06", "07", "08"))),]
-  
-  df <- df[-1,]
-  plot_density2(df)
   
   vertex.size[i] <- count
   
 }
-    
+ 
+vertex.sort <- sort(vertex.size)
+
+for (i in (data.mapper2$num_vertices):1) { #i is the cluster number
+  ind <- which(vertex.size==vertex.sort[[i]])
+  points.in.vertex <- data.mapper2$points_in_vertex[[i]]
+  len <- length(points.in.vertex)
+  for (j in 1:len) {
+    if (!is.na(data[points.in.vertex[[j]], 3])) {
+      df<- as.data.frame(rbind(df, data[points.in.vertex[[j]],]))
+    }
+  }
+
+  df <- df[-1,]
+  plot_density2(df)
+
+  
+}
+
 plot_density2 <- function(data_a){
   data_a$frp_aqua <- data_a$frp_aqua+10
   power <- log(data_a$frp_aqua,10)
