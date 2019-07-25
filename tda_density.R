@@ -36,9 +36,9 @@ for (i in 1:data.mapper2$num_vertices) { #i is the cluster number
  
 vertex.sort <- sort(vertex.size)
 
-for (i in (data.mapper2$num_vertices):1) { #i is the cluster number
+for (i in data.mapper2$num_vertices:(data.mapper2$num_vertices-10)) { 
   ind <- which(vertex.size==vertex.sort[[i]])
-  points.in.vertex <- data.mapper2$points_in_vertex[[i]]
+  points.in.vertex <- data.mapper2$points_in_vertex[[ind]]
   len <- length(points.in.vertex)
   for (j in 1:len) {
     if (!is.na(data[points.in.vertex[[j]], 3])) {
@@ -47,12 +47,10 @@ for (i in (data.mapper2$num_vertices):1) { #i is the cluster number
   }
 
   df <- df[-1,]
-  plot_density2(df)
-
-  
+  plot_density2(df, ind)
 }
 
-plot_density2 <- function(data_a){
+plot_density2 <- function(data_a, ind){
   data_a$frp_aqua <- data_a$frp_aqua+10
   power <- log(data_a$frp_aqua,10)
   power_freq <- as.data.frame(table(power))
@@ -73,9 +71,10 @@ plot_density2 <- function(data_a){
   bin_freq_days <- cbind(bin_names, bin_freq_days)
   
   bin_freq_days[,1] <- as.numeric(as.character(bin_freq_days[,1]))
-  plot(x=bin_freq_days[,1], y=bin_freq_days[,3], type="p",xlab="bins",ylab="freq")
+  plot(x=bin_freq_days[,1], y=bin_freq_days[,3], type="p",xlab="bins",ylab="freq",
+       main=paste("density of cluster number",ind))
   lines(x=bin_freq_days[,1], y=bin_freq_days[,3], type="l", col = "red")
-  lines(predict(loess(bin_freq_days[,3]~bin_freq_days[,1])))
+  #lines(predict(loess(bin_freq_days[,3]~bin_freq_days[,1])))
 }
 
 
