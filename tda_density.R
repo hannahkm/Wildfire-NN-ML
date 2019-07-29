@@ -1,5 +1,4 @@
-data <- read.csv("/Users/hk/Desktop/School/MRHS/11th\ Grade/R/NN-ML/Wildfire-NN-ML/ML_Data/Old Data/merra2_active_calfire_jja.csv")[, c("t2mmax", 
-                                                                                                             "qv2m", "frp_aqua", "year", "month", "day")] #2,8
+data <- read.csv("/Users/hk/Desktop/School/MRHS/11th\ Grade/R/NN-ML/Wildfire-NN-ML/ML_Data/Old Data/merra2_active_calfire_jja.csv")[, c("t2mmax","qv2m", "frp_aqua", "year", "month", "day")]
 
 data.dist <- dist(data[, c(1, 2)])
 par(mfrow = c(1, 1))
@@ -17,9 +16,6 @@ data.graph <-
 
 vertex.size <- rep(0, data.mapper2$num_vertices)
 
-df <- as.data.frame(matrix(ncol=ncol(data)))
-colnames(df) <- colnames(data)
-
 for (i in 1:data.mapper2$num_vertices) { #i is the cluster number
   points.in.vertex <- data.mapper2$points_in_vertex[[i]] #pts in cluster
   len <- length(points.in.vertex)
@@ -33,26 +29,43 @@ for (i in 1:data.mapper2$num_vertices) { #i is the cluster number
   vertex.size[i] <- count
   
 }
- 
+
+# l <- layout.auto(data.graph)
+# plot(data.graph, vertex.label = NA,
+#      cex.main=0.5, horizontal=TRUE, vertex.size = vertex.size, layout = l)
+
 vertex.sort <- sort(vertex.size)
 
+data_fp <- read.csv("/Users/hk/Desktop/Fire\ Downloads/all_data.csv")
+data_fp$Date <- paste(data_fp$month,data_fp$day,data_fp$year,sep="/")
+
 for (i in data.mapper2$num_vertices:(data.mapper2$num_vertices-10)) { 
+  df <- as.data.frame(matrix(ncol=ncol(data_fp)))
+  colnames(df) <- colnames(data_fp)
+  
   ind <- which(vertex.size==vertex.sort[[i]])
   points.in.vertex <- data.mapper2$points_in_vertex[[ind]]
   len <- length(points.in.vertex)
+
   for (j in 1:len) {
-    if (!is.na(data[points.in.vertex[[j]], 3])) {
-      df<- as.data.frame(rbind(df, data[points.in.vertex[[j]],]))
+    row <- points.in.vertex[[j]]
+    if (!is.na(data[row, 3])) {
+      date <- paste(data[row,"month"],data[row,"day"],data[row,"year"],sep="/")
+      df<- as.data.frame(rbind(df, data_fp[which(data_fp$Date==date),]))
     }
-  }
+  }    
 
   df <- df[-1,]
-  plot_density2(df, ind)
+  df <- df[which(df$FP_power>=1),]
+  
+  #print(as.data.frame(table(df$frp_aqua)))
+  plot_density2(df, ind, len, 1)
 }
 
-plot_density2 <- function(data_a, ind){
-  data_a$frp_aqua <- data_a$frp_aqua+10
-  power <- log(data_a$frp_aqua,10)
+
+
+plot_density2 <- function(data_a, ind, len, region){
+  power <- log(data_a$FP_power,10)
   power_freq <- as.data.frame(table(power))
   power_freq[,1] <- as.numeric(as.character(power_freq[,1]))
   
@@ -71,10 +84,26 @@ plot_density2 <- function(data_a, ind){
   bin_freq_days <- cbind(bin_names, bin_freq_days)
   
   bin_freq_days[,1] <- as.numeric(as.character(bin_freq_days[,1]))
-  plot(x=bin_freq_days[,1], y=bin_freq_days[,3], type="p",xlab="bins",ylab="freq",
-       main=paste("density of cluster number",ind))
-  lines(x=bin_freq_days[,1], y=bin_freq_days[,3], type="l", col = "red")
+  bin_freq_days[,3] <- as.numeric(as.character(bin_freq_days[,3]))
+  bin_freq_days[,3] <- bin_freq_days[,3]/len
+  
+  if (region == 1){
+    plot(x=bin_freq_days[,1], y=bin_freq_days[,3], type="n",xlab="bins",ylab="freq/day",
+         main=paste("density of cluster",ind))
+    lines(x=bin_freq_days[,1], y=bin_freq_days[,3], type="l", col = "black")
+    #north
+    plot_density2(data_a[which(data_a$FP_latitude>=38),], ind, len, 2)
+    #south
+    plot_density2(data_a[which(data_a$FP_latitude<38),], ind, len, 3)
+    
+    #split north and south by 38N: general split between biomes
+    
+  } else if (region == 2){
+    lines(x=bin_freq_days[,1], y=bin_freq_days[,3], type="l", col = "red")
+  } else {
+    lines(x=bin_freq_days[,1], y=bin_freq_days[,3], type="l", col = "blue")
+  }
+  
   #lines(predict(loess(bin_freq_days[,3]~bin_freq_days[,1])))
 }
-
 
