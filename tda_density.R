@@ -96,6 +96,9 @@ plot_density2 <- function(data_a, ind, len, region){
     #south
     plot_density2(data_a[which(data_a$FP_latitude<38),], ind, len, 3)
     
+    legend("topright", legend=c("total","north","south"), inset = 0.02,
+           col=c("black","red","blue"), lty=1, cex=0.8, box.lty=0)
+    
     #split north and south by 38N: general split between biomes
     
   } else if (region == 2){
