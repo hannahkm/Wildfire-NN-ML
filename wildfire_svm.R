@@ -1,14 +1,18 @@
 #https://medium.com/@ODSC/build-a-multi-class-support-vector-machine-in-r-abcdd4b7dab6
 
-install.packages("e1071")
+# install.packages("e1071")
 library("e1071")
 
+k <- 4
+df_results <- data.frame(matrix(nrow=2*k))
+
 setwd("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/Old_Data")
-data <- read.csv("/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r3.sel.csv")[,c(1:3,6,8,10,14,25,28,32,34:41)]
-#data <- data[c(which(data$month==6),which(data$month==7),which(data$month==8)),]
+data <- read.csv("/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r3.sel.csv")[,c(1:3,15:16,41)]
+data <- data[c(which(data$month==6),which(data$month==7),which(data$month==8)),]
 data <- data[order(data$year),]
 data <- data[,-c(1,2,3)]
-k <- 4
+df_add <- data.frame(matrix(nrow=8))
+colnames(df_add) <- c("r3_fwi_summer")
 
 set.seed(314)
 
@@ -50,10 +54,13 @@ for (i in 1:k){
   df <- as.data.frame(as.matrix(xtab))
   wrong <- df[2,3]+df[3,3]
   total <- nrow(test)
-  cat("percent error:", (wrong/total)*100, "\n")
-  cat("percent accuracy:", 100-(wrong/total)*100, "\n")
+  # cat("percent error:", (wrong/total)*100, "\n")
+  # cat("percent accuracy:", 100-(wrong/total)*100, "\n")
+  # 
+  # cat("====== tuning ====== \n")
   
-  cat("====== tuning ====== \n")
+  acc <- 100-(wrong/total)*100
+  df_add[i,] <- acc
   
   svm1_tune <- tune(svm, train.x=train, train$fpc1, kernel="radial")
   
@@ -68,10 +75,13 @@ for (i in 1:k){
   df <- as.data.frame(as.matrix(xtab))
   wrong <- df[2,3]+df[3,3]
   total <- nrow(test)
-  cat("percent error:", (wrong/total)*100, "\n")
-  cat("percent accuracy:", 100-(wrong/total)*100, "\n")
-  cat("=============================================== \n")
+  # cat("percent error:", (wrong/total)*100, "\n")
+  # cat("percent accuracy:", 100-(wrong/total)*100, "\n")
+  # cat("=============================================== \n")
+  acc <- 100-(wrong/total)*100
+  df_add[(i+4),] <- acc
 }
+df_results <- cbind(df_results, df_add)
 
 #=====================================
 data <- read.csv("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r1.sel.csv")[,c(1:3, 6,8,10,14,25,28,32,34:41)]

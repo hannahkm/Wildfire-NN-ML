@@ -5,7 +5,7 @@
 #so this one isn't going so well lol
 #https://stats.stackexchange.com/questions/270631/why-are-most-of-my-points-classified-as-noise-using-dbscan
 
-data <- read.csv("/home/hannah/Wildfire-NN-ML/ML_Data/ml_dly_cal_r1.sel.csv")[,c(1:3,6,8,10,11)]
+data <- read.csv("E:/Fire\ Downloads/all_data.csv")[,c(1:5)]
 df <- data[, 4:ncol(data)]
 
 # Compute DBSCAN using fpc package

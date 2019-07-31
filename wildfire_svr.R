@@ -3,8 +3,11 @@ library("e1071")
 library("caret")
 
 setwd("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data")
-data <- read.csv("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r3.sel.csv")[,c(1:3,6,8,10,14,25,28,32,34:41)]
-#data <- data[c(which(data$month==6),which(data$month==7),which(data$month==8)),]
+
+df_results <- data.frame(matrix(nrow=8))
+
+data <- read.csv("C:/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/ml_dly_cal_r3.sel.csv")[,c(1:3,15:16,41)]
+data <- data[c(which(data$month==6),which(data$month==7),which(data$month==8)),]
 data <- data[order(data$year),]
 data <- data[,-c(1,2,3)]
 k <- 4
@@ -36,6 +39,8 @@ num_train <- round(rows*(k-1)/k)
 s <- split(data,(sample(nrow(data), k, replace=F)))
 
 prev_index <- 1
+df_add <- data.frame(matrix(nrow=8))
+colnames(df_add) <- c("r3_fwi_summer")
 for (i in 1:k){
   rand_index <- sample(nrow(s[[i]]),round(nrow(s[[i]])*(k-1)/k))
   train <- data[row.names(s[[i]])[rand_index],]
@@ -58,10 +63,12 @@ for (i in 1:k){
       right <- right + df[j,3]
     }
   }
-  cat("percent accuracy:", (right/total)*100, "\n")
-  cat("percent error:", 100-(right/total)*100, "\n")
+  # cat("percent accuracy:", (right/total)*100, "\n")
+  # cat("percent error:", 100-(right/total)*100, "\n")
   
-  cat("====== tuning ====== \n")
+  acc <- (right/total)*100
+  df_add[i,] <- acc
+  # cat("====== tuning ====== \n")
   
   svm1_tune <- tune(svm, train.x=train, train$fpc1, kernel="radial")
   
@@ -81,7 +88,16 @@ for (i in 1:k){
       right <- right + df[j,3]
     }
   }
-  cat("percent accuracy:", (right/total)*100, "\n")
-  cat("percent error:", 100-(right/total)*100, "\n")
-  cat("=============================================== \n")
+  acc <- (right/total)*100
+  df_add[(i+4),] <- acc
 }
+
+df_results <- cbind(df_results, df_add)
+
+
+
+
+
+
+
+

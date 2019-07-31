@@ -13,8 +13,14 @@ long_value <- long_min
 sqr_values <- data.frame(matrix(ncol=1))
 while(lat_value < lat_max){
   while (long_value < long_max){
-    df <- data[which(data$FP_latitude>=lat_value & data$FP_latitude<(lat_value+sqr_len) &
-                       data$FP_longitude>=long_value & data$FP_longitude<(long_value+sqr_len)),"FP_power"]
+    df <- data[which(data$FP_latitude>=lat_value & 
+                       data$FP_latitude<(lat_value+sqr_len) &
+                       data$FP_longitude>=long_value & 
+                       data$FP_longitude<(long_value+sqr_len)),"FP_power"]
     to_add <- data.frame(c(sum(df)))
   }
 }
+
+
+
+
