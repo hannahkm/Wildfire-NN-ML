@@ -14,11 +14,12 @@ row_num <- round(lat_max-lat_min)/0.5
 col_num <- round(long_max-long_min)/0.5
 
 sqr_values <- data.frame(matrix(nrow = row_num, ncol=col_num))
+coord_values <- data.frame(matrix(ncol = 3))
+colnames(coord_values) <- c("x", "y", "value")
 row_ind <- row_num
 col_ind <- 1
 while(lat_value < lat_max){
   while (long_value < long_max){
-    print(lat_value)
     df <- data[which(data$FP_latitude>=lat_value & 
                        data$FP_latitude<(lat_value+sqr_len) &
                        data$FP_longitude>=long_value & 
@@ -29,6 +30,9 @@ while(lat_value < lat_max){
       to_add <- sum(df)
     }
     sqr_values[row_ind, col_ind] <- to_add
+    add_row <- as.data.frame(cbind(lat_value, long_value, to_add))
+    colnames(add_row) <- colnames(coord_values)
+    coord_values <- rbind(coord_values, add_row)
     
     long_value <- long_value + sqr_len
     col_ind <- col_ind + 1
@@ -39,6 +43,13 @@ while(lat_value < lat_max){
   row_ind <- row_ind - 1
 }
 
+coord_values <- coord_values[-1,]
+len <- NROW(unique(coord_values$value))
+plot(x=coord_values[,1], y=coord_values[,2], 
+     col=rev(heat.colors(len))
+     [as.numeric(cut(coord_values$value,breaks=len/0.5))], pch=15, cex = 2.5,
+     xlim=c(lat_min,lat_max), ylim=c(long_min,long_max), tck=-.03,
+     xlab="longitude", ylab="latitude", main="Fire Power in California")
 
 
 
