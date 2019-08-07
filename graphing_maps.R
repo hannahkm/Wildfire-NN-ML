@@ -1,4 +1,4 @@
-data <- read.csv("/Users/hk/Desktop/Fire\ Downloads/all_data.csv")
+data <- read.csv("E:/Fire\ Downloads/all_data.csv")
 
 lat_max <- max(data$FP_latitude)
 lat_min <- min(data$FP_latitude)
@@ -45,15 +45,19 @@ while(lat_value < lat_max){
 
 coord_values <- coord_values[-1,]
 
-coord_values$value <- rev(heat.colors(len))[as.numeric(cut(
-  coord_values$value,breaks=len/0.1))]
-len <- NROW(unique(coord_values$value))
+len <- NROW((coord_values$value))
+coord_values2 <- coord_values
+coord_values2[which(coord_values2$value<=250),3] <- 0
+
+coord_values2$value <- rev(heat.colors(len))[as.numeric(cut(
+  coord_values2$value,breaks=len/0.1))]
 par(pty="s")
 plot(x=coord_values[,1], y=coord_values[,2], 
      col=coord_values[,3], 
      pch=15, cex = 2.5,
      xlim=c(long_min, long_max), ylim=c(lat_min, lat_max), tck=-.03,
-     xlab="longitude", ylab="latitude", main="Fire Power in California")
+     xlab="longitude", ylab="latitude", main="Fire Power in California",
+     family = "serif")
 
 #=================
 #install.packages("ggmap")
@@ -61,11 +65,11 @@ library("ggmap")
 library("maps") 
 library("mapdata")
 library("ggplot2")
-temp <- as.data.frame(coord_values) 
+temp <- as.data.frame(coord_values2) 
 states <- map_data("state")
 ca_nv <- subset(states, region %in% c("california", "nevada"))
 
-coord_values[which(coord_values$value=="#FFFFF5FF"),3] <- NA
+coord_values2[which(coord_values2$value=="#FFFFFFFF"),3] <- NA
 
 ggplot(data = ca_nv) + 
   geom_polygon(aes(x = long, y = lat, group = group), 
@@ -73,11 +77,11 @@ ggplot(data = ca_nv) +
   coord_fixed(1.3) + 
   labs(title="Fire Power", x="Longitude", y="Latitude") +
   theme(
-    axis.text = element_text(color="black", size=12),
-    plot.title = element_text(color="black", size=18, hjust=0.5),
-    axis.title.x = element_text(color="black", size=14),
-    axis.title.y = element_text(color="black", size=14)) +
-  geom_point(data = coord_values, 
+    axis.text = element_text(color="black", size=12, family = "serif"),
+    plot.title = element_text(color="black", size=18, hjust=0.5, family = "serif"),
+    axis.title.x = element_text(color="black", size=14, family = "serif"),
+    axis.title.y = element_text(color="black", size=14, family = "serif")) +
+  geom_point(data = coord_values2, 
              mapping = aes(x = x, y = y, color=value), shape=15, size=2) +
   scale_color_identity()
 

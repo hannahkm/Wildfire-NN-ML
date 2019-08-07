@@ -10,8 +10,8 @@ pr <- pr.curve(scores.class0 = fg, scores.class1 = bg, curve = TRUE)
 #scores.class0 = classification scores of all data points OR data points in positive class
 #scores.class1 = either same as scores.class0 OR scores for negative data poitnts
 
-plot(roc)
-plot(pr)
+plot(roc,family = "serif")
+plot(pr, family = "serif")
 
 x <- c(fg, bg)
 lab <- c(rep(1,length(fg)),rep(0,length(bg)))
@@ -33,7 +33,7 @@ wroc2 <- roc.curve(scores.class0=x,weights.class0=wfg,curve=TRUE,
 wpr2 <- pr.curve(scores.class0=x,weights.class0=wfg,curve=TRUE,
                  max.compute=T,min.compute=T,rand.compute=T)
 
-plot(wpr2,max.plot=TRUE,min.plot=TRUE,rand.plot=TRUE,fill.area=TRUE)
+plot(wpr2,max.plot=TRUE,min.plot=TRUE,rand.plot=TRUE,fill.area=TRUE, family = "serif")
 
 y<-c(rnorm(300,sd=2),rnorm(500,-5,sd=2))
 wroc3 <- roc.curve(scores.class0=y,weights.class0=wfg,curve=TRUE,
@@ -42,13 +42,13 @@ wpr3 <- pr.curve(scores.class0=y,weights.class0=wfg,curve=TRUE,
                  max.compute=TRUE,min.compute=TRUE,rand.compute=TRUE)
 
 plot(wpr2,max.plot=TRUE,min.plot=TRUE,rand.plot=TRUE,fill.area=T,
-     color=2,auc.main=FALSE)
-plot(wpr3,add=TRUE,color=3)
+     color=2,auc.main=FALSE, family = "serif")
+plot(wpr3,add=TRUE,color=3, family = "serif")
 
 #just playing with the plot at this point tbh
-plot(wpr2,scale.color=heat.colors(100))
-plot(wpr2,color=6,lty="dotted")
-plot(wpr2,legend=1) #1=bottom, 2=left, 3=top, 4=right
+plot(wpr2,scale.color=heat.colors(100), family = "serif")
+plot(wpr2,color=6,lty="dotted", family = "serif")
+plot(wpr2,legend=1, family = "serif") #1=bottom, 2=left, 3=top, 4=right
 
 #================ DMwR and ROCR
 
@@ -58,5 +58,5 @@ PRcurve(predict_elm,y_test)
 
 
 #================ verification
-roc.plot(y_test,as.data.frame(predict_elm))
+roc.plot(y_test,as.data.frame(predict_elm),family = "serif")
 

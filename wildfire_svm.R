@@ -112,7 +112,7 @@ test <- x[row.names(x)[-rand_index],]
 
 ygrid = predict(fit, train)
 
-plot(train, col = as.numeric(ygrid), pch = 20, cex = 0.2)
+plot(train, col = as.numeric(ygrid), pch = 20, cex = 0.2, family = "serif")
 points(x, col = y+1, pch = 19)
 
 func = predict(fit, train, decision.values = TRUE)

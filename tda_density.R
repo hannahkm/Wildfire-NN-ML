@@ -1,4 +1,4 @@
-data <- read.csv("/Users/hk/Desktop/School/MRHS/11th\ Grade/R/NN-ML/Wildfire-NN-ML/ML_Data/Old Data/merra2_active_calfire_jja.csv")[, c("t2mmax","qv2m", "frp_aqua", "year", "month", "day")]
+data <- read.csv("/Users/kimh2/Desktop/Wildfire-NN-ML/ML_Data/Old\ Data/merra2_active_calfire_jja.csv")[, c("t2mmax","qv2m", "frp_aqua", "year", "month", "day")]
 
 data.dist <- dist(data[, c(1, 2)])
 par(mfrow = c(1, 1))
@@ -36,7 +36,7 @@ for (i in 1:data.mapper2$num_vertices) { #i is the cluster number
 
 vertex.sort <- sort(vertex.size)
 
-data_fp <- read.csv("/Users/hk/Desktop/Fire\ Downloads/all_data.csv")
+data_fp <- read.csv("E:/Fire\ Downloads/all_data.csv")
 data_fp$Date <- paste(data_fp$month,data_fp$day,data_fp$year,sep="/")
 
 for (i in data.mapper2$num_vertices:(data.mapper2$num_vertices-10)) { 
@@ -89,7 +89,7 @@ plot_density2 <- function(data_a, ind, len, region){
   
   if (region == 1){
     plot(x=bin_freq_days[,1], y=bin_freq_days[,3], type="n",xlab="bins",ylab="freq/day",
-         main=paste("density of cluster",ind))
+         main=paste("density of cluster",ind), family = "serif")
     lines(x=bin_freq_days[,1], y=bin_freq_days[,3], type="l", col = "black")
     #north
     plot_density2(data_a[which(data_a$FP_latitude>=38),], ind, len, 2)

@@ -46,7 +46,7 @@ library("OneR")
 # data <- data[-which(data$FP_power==0),]
 # write.csv(data, file="all_data.csv", row.names=FALSE)
 
-data <- read.csv("/Users/hk/Desktop/Fire\ Downloads/all_data.csv")[-1,-1]
+data <- read.csv("E:/Fire\ Downloads/all_data.csv")
 rownames(data) <- 1:nrow(data)
 
 #======================================= SUMMER ONLY
@@ -58,7 +58,7 @@ data_summer <- data[which(data$month %in% c("6", "7", "8")),]
 power_freq <- as.data.frame(table(log(data_summer$FP_power,10)))
 power_freq[,1] <- as.numeric(as.character(power_freq[,1]))
 
-plot(density(power_freq[,1]))
+plot(density(power_freq[,1]), family = "serif")
 
 #======================================= ACTIVE SUMMERS
 
@@ -73,7 +73,7 @@ power_act <- log(data_active$FP_power,10)
 power_freq_act <- as.data.frame(table(power_act))
 power_freq_act[,1] <- as.numeric(as.character(power_freq_act[,1]))
 
-plot(density(power_freq_act[,1], bw=0.05), col = "red")
+plot(density(power_freq_act[,1], bw=0.05), col = "red", family = "serif")
 
 #======================================= INACTIVE SUMMERS
 
@@ -109,7 +109,7 @@ plot_density <- function(data_a, data_i){
   
   bin_freq_days[,1] <- as.numeric(as.character(bin_freq_days[,1]))
   plot(x=bin_freq_days[,1], y=bin_freq_days[,3], 
-       type="n",xlab="bins", ylab="freq/day", 
+       type="n",xlab="bins", ylab="freq/day", family = "serif",
        main="frequency of fire count \n of active and inactive summers")
   lines(x=bin_freq_days[,1], y=bin_freq_days[,3], type="l", col = "red")
   bin_freq_days[,1] <- as.numeric(as.character(bin_freq_days[,1]))
