@@ -1,4 +1,4 @@
-# Wildfire-NN-ML - ongoing
+# Wildfire-NN-ML
 An extension of Wildfire-Analysis (www.github.com/hk21042/Wildfire-Analysis). Using maching learning to identify the relationship between climate variables and how fire weather can be predicted. Done through the JHU APL ASPIRE program (Summer 2019).
 
 ## The Problem
