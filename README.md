@@ -1,5 +1,5 @@
-# Wildfire-NN-ML
-An extension of Wildfire-Analysis (github.com/hk21042/Wildfire-Analysis). Using maching learning to identify the relationship between climate variables and how fire weather can be predicted. Done through the JHU APL ASPIRE program (Summer 2019).
+# Wildfire-NN-ML - ongoing
+An extension of Wildfire-Analysis (www.github.com/hk21042/Wildfire-Analysis). Using maching learning to identify the relationship between climate variables and how fire weather can be predicted. Done through the JHU APL ASPIRE program (Summer 2019).
 
 ## The Problem
 In the previous portion of this study, I found that the Fire Weather Index (FWI) showed significant inconsistencies with fire weather as predicted by climate variables. It was able to predict inactive seasons, when less fires occurred, but was less capable in predicting active seasons. A new index would be needed to accurately predict, and thus prevent, potentially disastrous wildfires in California. In this study, several methods of machine learning were used to identify patterns or other relationships between climate and fire variables such as BUI (build-up index), ISI (initial spread index), and FRP (fire radiative power). The methods used, as listed below, were: support vector machines, support vector regressions, DBSCAN, convolutional neural networks, extreme learning machines, and recurrent neural networks.  
